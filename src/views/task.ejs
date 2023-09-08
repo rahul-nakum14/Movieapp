@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- meta tags -->
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+
+    <!-- normalize -->
+    <link rel="stylesheet" href="./css/normalize.css" />
+
+    <!-- main  -->
+    <link rel="stylesheet" href="./css/main.css" />
+
+    <title>Edit Task</title>
+  </head>
+
+  <body>
+    <!-- container div -->
+    <div class="container">
+      <!-- form for editing a single task -->
+      <form class="single-task-form">
+        <h4>Edit Task</h4>
+        <!-- form control for task id -->
+        <div class="form-control">
+          <label>Task ID</label>
+          <!-- display the task id from the data object -->
+          <p class="task-edit-id"><%= data.id %></p>
+        </div>
+        <!-- form control for task name -->
+        <div class="form-control">
+          <label for="name">Name</label>
+          <!-- display the task name from the data object -->
+          <input type="text" name="name" class="task-edit-name" value="<%= data.name %>" />
+        </div>
+        <!-- form control for task completion status -->
+        <div class="form-control">
+          <label for="completed">completed</label>
+          <!-- check or uncheck the checkbox based on the task completion status from the data object -->
+          <% if (data.completed) { %>
+            <input type="checkbox" name="completed" class="task-edit-completed" checked />
+          <% } else { %>
+            <input type="checkbox" name="completed" class="task-edit-completed" />
+          <% } %>
+        </div>
+        <!-- submit button -->
+        <button type="submit" class="block btn task-edit-btn">edit</button>
+        <!-- alert div -->
+        <div class="form-alert"></div>
+      </form>
+      <!-- link to go back to tasks page -->
+      <a href="./index.html" class="btn back-link">back to tasks</a>
+    </div>
+
+    <!-- axios -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+      integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <!-- js -->
+    <script src="./js/edit-task.js"></script>
+  </body>
+</html>

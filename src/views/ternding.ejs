@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Movie Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        /* CSS for truncating text with clamp */
+        .clamp-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 5; /* Adjust this value to set the maximum number of lines to display */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Custom style for movie title */
+        .movie-title {
+            /* Set a fixed height for the title and add ellipsis for overflow */
+            height: 50px; /* Adjust the height as needed */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Custom style for movie summary */
+        .movie-summary {
+            /* Set a fixed height for the summary and add ellipsis for overflow */
+            height: 100px; /* Adjust the height as needed */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+   
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
+            aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <a class="navbar-brand" href="#">Movie Dashboard</a>
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item ">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/recommendation">Recommendation</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/trending">Trending</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/wishlist">Wishlist</a>
+                </li>
+            </ul>
+            <form class="form-inline my-1 my-lg-0">
+                <input class="form-control mr-sm-1" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <!-- User link -->
+            <ul class="navbar-nav ml-2">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">User</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        <h1 class="text-center">Movie Dashboard</h1>
+        <div class="row" id="movie-container">
+            <!-- Movie cards will be dynamically generated here -->
+        </div>
+    </div>
+
+    <script>
+        // JavaScript code goes here
+
+        // Replace 'YOUR_API_KEY' with your actual TMDb API key (if using API key)
+        // const apiKey = 'YOUR_API_KEY';
+
+        // Replace 'YOUR_TOKEN' with your actual TMDb API token (if using token)
+        const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1YTE5NGJmZjc5ZWZlYjY3ZWFjNmYxOTY3ZGI3MjhmZSIsInN1YiI6IjY0Zjk3MDQyZGMxY2I0MDExZmMzMmI3ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.CiHZ1F7tjHJ4A0QCU2mVSfhkmAAiJPds0zoEGtDCpTM';
+
+        const apiUrl = `https://api.themoviedb.org/3/trending/all/day?language=en-US`;
+
+        // Additional headers
+        const headers = {
+            'Authorization': `Bearer ${token}`, // Use Bearer token if needed
+            'Accept': 'application/json'
+        };
+
+        // Function to fetch movie data from TMDb API
+        async function fetchMovies() {
+            try {
+                const response = await fetch(apiUrl, { headers });
+                const data = await response.json();
+
+                // Display movies in the dashboard
+                const movieContainer = document.getElementById('movie-container');
+                data.results.forEach((movie) => {
+                    const movieCard = document.createElement('div');
+                    movieCard.classList.add('col-md-3', 'mb-4'); // Bootstrap classes
+
+                    const card = document.createElement('div');
+                    card.classList.add('card');
+
+                    const cardBody = document.createElement('div');
+                    cardBody.classList.add('card-body', 'd-flex', 'flex-column');
+
+                    // Custom style for movie title
+                    const title = document.createElement('h5');
+                    title.classList.add('card-title', 'movie-title'); // Bootstrap class and custom class
+                    title.textContent = movie.title;
+
+                    const summary = document.createElement('p');
+                    summary.classList.add('card-text', 'movie-summary'); // Bootstrap class and custom class
+                    summary.textContent = movie.overview;
+
+                    const toggleButton = document.createElement('button');
+                    toggleButton.classList.add('btn', 'btn-link', 'mt-auto');
+                    toggleButton.textContent = 'Read More';
+
+                    toggleButton.addEventListener('click', () => {
+                        if (summary.classList.contains('movie-summary')) {
+                            summary.classList.remove('movie-summary');
+                            summary.classList.add('clamp-text');
+                            toggleButton.textContent = 'Read Less';
+                        } else {
+                            summary.classList.remove('clamp-text');
+                            summary.classList.add('movie-summary');
+                            toggleButton.textContent = 'Read More';
+                        }
+                    });
+
+                    const wishlistButton = document.createElement('button');
+                    wishlistButton.classList.add('btn', 'btn-primary', 'mt-auto'); // Bootstrap classes for a button
+                    wishlistButton.textContent = 'Add to Wishlist';
+
+                    cardBody.appendChild(title);
+                    cardBody.appendChild(summary);
+                    cardBody.appendChild(toggleButton);
+                    cardBody.appendChild(wishlistButton);
+                    card.appendChild(cardBody);
+                    movieCard.appendChild(card);
+                    movieContainer.appendChild(movieCard);
+                });
+            } catch (error) {
+                console.error('Error fetching movies:', error);
+            }
+        }
+
+        // Call the fetchMovies function when the page loads
+        window.onload = fetchMovies;
+    </script>
+
+       <!-- Include Bootstrap JS and jQuery for Navbar functionality -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
